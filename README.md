@@ -1,6 +1,3 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
 
 ## Monad ZK-PriceGuard
 
@@ -11,6 +8,11 @@ This demo application showcases an **end-to-end pipeline** that combines AI infe
 - Users input market data → an ONNX AI model predicts a price
 - An EZKL pipeline generates a witness and (currently) a **mock** ZK proof
 - The prediction and proof payload are sent to **Monad Testnet**, returning a **real transaction hash (TxHash)**
+
+<div align="center">
+  <img src="flow.png" alt="Pipeline Flow" width="800" />
+  <p><em>End-to-end pipeline flow: AI Inference → ZK Proof Generation → On-chain Verification</em></p>
+</div>
 
 ### TL;DR
 
@@ -28,6 +30,11 @@ This demo application showcases an **end-to-end pipeline** that combines AI infe
 ### Real Benchmark Results
 
 We executed actual transactions on both networks and captured real metrics. Results are stored in `public/benchmark-data.json` and displayed in the Benchmark tab of the application.
+
+<div align="center">
+  <img src="benchmark.png" alt="Performance Benchmark" width="800" />
+  <p><em>Real benchmark results comparing Sepolia and Monad Testnet performance</em></p>
+</div>
 
 | Metric | Ethereum (Sepolia) | Monad Testnet | Improvement |
 |--------|-------------------|---------------|--------------|
