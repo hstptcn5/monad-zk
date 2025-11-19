@@ -1,0 +1,20 @@
+# EZKL artifacts (generated files)
+*.key
+*.ezkl
+witness.json
+proof.json
+contracts/
+resources/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+

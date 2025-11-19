@@ -1,0 +1,5 @@
+{
+  "name": "Monad ZK-PriceGuard",
+  "description": "A ZK-ML dashboard demonstrating the verification of AI-generated price predictions on the Monad Testnet using EZKL and PyTorch.",
+  "requestFramePermissions": []
+}

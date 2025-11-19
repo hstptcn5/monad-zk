@@ -1,0 +1,14 @@
+# EZKL - Zero Knowledge Machine Learning
+# Install from PyPI or GitHub
+ezkl>=0.1.0
+
+# PyTorch (for model training, if needed)
+torch>=2.0.0
+numpy>=1.24.0
+
+# For handling nested event loops (fixes "no running event loop" error)
+nest-asyncio>=1.5.0
+
+# Optional: For better performance
+# ezkl-gpu  # Uncomment if you have CUDA GPU
+
