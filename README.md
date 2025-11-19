@@ -183,14 +183,7 @@ The frontend automatically loads `public/contract-addresses.json` and:
    npm install
    ```
 
-2. (Optional) Set GEMINI API key for AI explanations:
-
-   ```bash
-   # Create .env.local
-   GEMINI_API_KEY=your_api_key_here
-   ```
-
-3. Run the app:
+2. Run the app:
 
    ```bash
    npm run dev
@@ -330,8 +323,7 @@ monad-zk-priceguard/
 ├── services/
 │   ├── onnxService.ts         # ONNX runtime-web (browser inference)
 │   ├── zkService.ts           # ZK proof service (fetch artifacts / mock)
-│   ├── blockchainService.ts   # Ethers + Monad Testnet integration
-│   └── geminiService.ts       # Gemini API client for AI explanations
+│   └── blockchainService.ts   # Ethers + Monad Testnet integration
 │
 ├── model/
 │   ├── generate_proof.py      # EZKL pipeline (settings, compile, witness, mock proof)
@@ -372,6 +364,6 @@ This project is ready for demo / hackathon submission:
 - ✅ ZK pipeline generating witnesses and proofs (with mock fallback)
 - ✅ Real transactions on Monad Testnet with actual TxHashes
 - ✅ Performance benchmarks demonstrating Monad's superiority for ZK-ML workloads
-- ✅ Beautiful UI with AI explanations (Gemini) and comprehensive logging
+- ✅ Beautiful UI with comprehensive logging and real-time terminal output
 
 Together, these components tell a complete story: **"AI + ZK + High-Performance L1"** — showcasing how Monad's low costs and fast finality make verifiable AI-driven DeFi applications not just possible, but practical. 🛡️🧠🧾

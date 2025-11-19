@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PipelineStep } from '../types';
-import { generateAIExplanation } from '../services/geminiService';
 import { runInference, preloadModel } from '../services/onnxService';
 import { generateProof } from '../services/zkService';
 import { 
@@ -50,7 +49,6 @@ const Dashboard: React.FC = () => {
 
   const [prediction, setPrediction] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
-  const [aiCommentary, setAiCommentary] = useState<string>("System Ready. Enter market data and start verification.");
   const [showInfo, setShowInfo] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [proofHex, setProofHex] = useState<string>("");
@@ -141,8 +139,6 @@ const Dashboard: React.FC = () => {
     // Step 1: Data Ingestion
     await updateStep(0, 'processing', resetSteps);
     addLog(`Initializing pipeline with inputs: Vol=${btcVol}, Gas=${ethGas}, Vol=${volume}`);
-    const comment1 = await generateAIExplanation(`Processing input vector [${btcVol}, ${ethGas}, ${volume}] for PyTorch model.`);
-    setAiCommentary(comment1);
     await new Promise(r => setTimeout(r, 800));
     await updateStep(0, 'completed', resetSteps);
 
@@ -195,9 +191,6 @@ const Dashboard: React.FC = () => {
 
     // Step 4: Proof Generation
     await updateStep(3, 'processing', resetSteps);
-    const comment4 = await generateAIExplanation("Generating Zero-Knowledge Proof using EZKL and Halo2 backend.");
-    setAiCommentary(comment4);
-    
     addLog("[Halo2] Starting proof generation...");
     addLog("[Halo2] Computing KZG commitments...");
     await new Promise(r => setTimeout(r, 600));
@@ -253,8 +246,6 @@ const Dashboard: React.FC = () => {
 
     // Step 5: Verify on Blockchain
     await updateStep(4, 'processing', resetSteps);
-    const comment5 = await generateAIExplanation("Broadcasting proof to Monad Testnet.");
-    setAiCommentary(comment5);
     addLog("[Monad] Connecting to RPC Node...");
     addLog("[Monad] Estimating Gas...");
     
@@ -305,7 +296,6 @@ const Dashboard: React.FC = () => {
     await updateStep(4, 'completed', resetSteps);
 
     setIsRunning(false);
-    setAiCommentary("Verification Successful! Price is protected.");
   };
 
   const updateStep = async (index: number, status: PipelineStep['status'], currentSteps: PipelineStep[]) => {
@@ -430,14 +420,6 @@ const Dashboard: React.FC = () => {
              </div>
           </div>
 
-          <div className="bg-monad-primary/10 border-l-2 border-monad-primary p-3 mb-6 relative z-10">
-              <div className="flex items-start gap-3">
-                  <div className="mt-1 min-w-[16px]">
-                    <div className={`w-2 h-2 bg-monad-accent rounded-full ${isRunning ? 'animate-pulse' : ''}`}></div>
-                  </div>
-                  <p className="text-sm text-gray-300 italic min-h-[40px]">{aiCommentary}</p>
-              </div>
-          </div>
 
           <button 
             onClick={runPipeline}
