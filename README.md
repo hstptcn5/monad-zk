@@ -23,24 +23,42 @@ This demo application showcases an **end-to-end pipeline** that combines AI infe
 
 ## Performance Benchmark
 
-**We deployed the Verifier contract on both Sepolia (Ethereum) and Monad Testnet to demonstrate Monad's superior performance for ZK verification workloads.**
+**We deployed the Verifier contract on both Sepolia (Ethereum) and Monad Testnet and ran real benchmark tests to demonstrate Monad's superior performance for ZK verification workloads.**
 
-### Results
+### Real Benchmark Results
+
+We executed actual transactions on both networks and captured real metrics. Results are stored in `public/benchmark-data.json` and displayed in the Benchmark tab of the application.
 
 | Metric | Ethereum (Sepolia) | Monad Testnet | Improvement |
 |--------|-------------------|---------------|--------------|
-| **Verification Time** | ~12.5 seconds | ~0.8 seconds | **15.6x faster** |
-| **Gas Cost (USD)** | ~$15.00 | <$0.01 | **~1,500x cheaper** |
-| **Gas Units** | ~450,000 | ~450,000 | Similar (cost differs) |
+| **Confirmation Time** | 15.28 seconds | 5.11 seconds | **3.0x faster** |
+| **Gas Units Used** | 33,170 | 94,106 | Monad uses more units |
+| **Gas Cost** | 0.00000003 ETH (~$0.0001) | 0.00959881 MON | Different tokens* |
+| **Token Type** | ETH | MON | Cannot compare directly |
+
+\* *Note: Sepolia uses ETH while Monad uses MON (testnet token). Cost comparison in USD is not applicable as MON price is not available for testnet tokens.*
+
+### Key Findings
+
+1. **Speed Advantage**: Monad confirms transactions **3x faster** than Sepolia (5.11s vs 15.28s), enabling near real-time verification
+2. **Gas Efficiency Trade-off**: While Monad uses more gas units (94,106 vs 33,170), the speed advantage makes this acceptable for time-sensitive applications
+3. **Real-World Performance**: These are actual on-chain measurements, not estimates or simulations
 
 ### Why This Matters
 
-ZK proof verification is computationally intensive. For production DeFi applications that need to verify ML model predictions on-chain, the cost and latency differences are critical:
+ZK proof verification is computationally intensive. For production DeFi applications that need to verify ML model predictions on-chain, the latency difference is critical:
 
-- **Ethereum**: At ~$15 per verification, frequent price checks would be prohibitively expensive
-- **Monad**: At <$0.01 per verification with sub-second confirmation, real-time AI-driven risk management becomes economically viable
+- **Ethereum Sepolia**: ~15 seconds confirmation time means delayed risk management decisions
+- **Monad Testnet**: ~5 seconds confirmation time enables near real-time AI-driven risk management
 
-**This benchmark demonstrates why Monad is the ideal platform for ZK-ML applications like PriceGuard**, where frequent, low-cost verification is essential for maintaining protocol safety without breaking the bank.
+**This real-world benchmark demonstrates why Monad is the ideal platform for ZK-ML applications like PriceGuard**, where fast finality enables real-time verification without compromising security.
+
+### Benchmark Data Source
+
+- **Real Data**: Captured from actual transactions on both networks
+- **Script**: `npm run benchmark` executes test transactions and measures performance
+- **Storage**: Results saved to `public/benchmark-data.json`
+- **Visualization**: Benchmark tab in the app displays real-time charts from actual data
 
 ---
 
@@ -59,8 +77,10 @@ Contracts have been deployed using Hardhat. Addresses are stored in `public/cont
 
 - **Network**: `sepolia`
 - **Chain ID**: `11155111`
-- **Verifier**: `0x...` (deployed for comparison)
-- **MonadPriceGuard**: `0x...` (deployed for comparison)
+- **RPC**: `https://sepolia.infura.io/v3/...` (Infura)
+- **Verifier**: `0xc9FD25408213f42FBae34f65707CCa699b377480`
+- **MonadPriceGuard**: `0x889788629fc70fbAA9c1fdEe398021e511c34031`
+- **Deployment Tx**: Deployed for performance comparison with Monad Testnet
 
 The frontend automatically loads `public/contract-addresses.json` and:
 - Logs: `[Blockchain] Contract loaded: 0x8BBB98...`
@@ -236,6 +256,53 @@ Contracts are already deployed, but if you want to redeploy:
      - `public/contract-addresses.json` (for the frontend)
 
 See `DEPLOY.md` for full deployment flow and instructions.
+
+---
+
+## Running Real Benchmarks
+
+**✅ Real benchmark data has been captured and is available in `public/benchmark-data.json`.**
+
+The benchmark results shown in the Performance Benchmark section above are from actual on-chain transactions executed on both Sepolia and Monad Testnet.
+
+### To Re-run Benchmarks
+
+If you want to capture fresh benchmark data:
+
+1. **Deploy on Sepolia** (if not already deployed):
+   ```bash
+   npm run deploy:sepolia
+   ```
+
+2. **Deploy on Monad Testnet** (if not already deployed):
+   ```bash
+   npm run deploy
+   ```
+
+3. **Run Benchmark Script**:
+   ```bash
+   npm run benchmark
+   ```
+
+   This will:
+   - Send test transactions to both networks
+   - Measure gas usage, confirmation time, and costs
+   - Save results to `public/benchmark-data.json`
+   - Display a summary with Monad's improvements
+
+4. **View Results**: 
+   - The Benchmark tab in the app automatically loads real data from `benchmark-data.json`
+   - Charts update with actual measurements from on-chain transactions
+   - Results include confirmation times, gas units, and token-specific costs
+
+### Current Benchmark Data
+
+- **Location**: `public/benchmark-data.json`
+- **Last Updated**: From actual testnet transactions
+- **Networks Tested**: Sepolia (Ethereum) and Monad Testnet
+- **Metrics Captured**: Confirmation time, gas used, gas cost (ETH/MON), transaction hashes
+
+See `BENCHMARK.md` for detailed instructions and troubleshooting.
 
 ---
 

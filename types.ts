@@ -23,4 +23,7 @@ export interface BenchmarkData {
   name: string;
   gasUsed: number;
   verifyTime: number;
+  tokenName?: string;
+  gasCostToken?: string;
+  gasCostUsd?: string | null;
 }

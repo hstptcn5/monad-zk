@@ -22,6 +22,13 @@ export default {
       chainId: 10143,
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
+    sepolia: {
+      url: process.env.SEPOLIA_RPC_URL || 
+           (process.env.INFURA_API_KEY ? `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}` : "https://rpc.sepolia.org"),
+      type: "http",
+      chainId: 11155111,
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+    },
     localhost: {
       url: "http://127.0.0.1:8545",
       type: "http",

@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "compile": "hardhat compile",
-    "deploy": "hardhat run scripts/deploy.js --network monadTestnet"
+    "deploy": "hardhat run scripts/deploy.js --network monadTestnet",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "benchmark": "node scripts/benchmark.js"
   },
   "dependencies": {
     "@google/genai": "^1.30.0",

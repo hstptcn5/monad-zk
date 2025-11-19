@@ -26,7 +26,12 @@ async function main() {
   if (networkName === "localhost") {
     rpcUrl = "http://127.0.0.1:8545";
     chainId = 31337;
+  } else if (networkName === "sepolia") {
+    rpcUrl = process.env.SEPOLIA_RPC_URL || 
+             (process.env.INFURA_API_KEY ? `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}` : "https://rpc.sepolia.org");
+    chainId = 11155111;
   } else {
+    // monadTestnet
     rpcUrl = "https://testnet-rpc.monad.xyz";
     chainId = 10143;
   }
@@ -82,26 +87,69 @@ async function main() {
 
   // 5. Save Artifacts
   console.log("\n💾 Saving artifacts...");
-  const addresses = {
+  
+  // Load existing addresses if any
+  const rootPath = path.join(__dirname, '..', 'contract-addresses.json');
+  const publicDir = path.join(__dirname, '..', 'public');
+  const publicPath = path.join(publicDir, 'contract-addresses.json');
+  
+  let allAddresses = {};
+  
+  // Try to load existing addresses
+  if (fs.existsSync(publicPath)) {
+    try {
+      const existing = JSON.parse(fs.readFileSync(publicPath, 'utf8'));
+      // Handle both old format (flat) and new format (nested)
+      if (existing.network) {
+        // Old format - convert to new format
+        allAddresses[existing.network] = {
+          verifier: existing.verifier,
+          monadPriceGuard: existing.monadPriceGuard,
+          chainId: existing.chainId
+        };
+      } else {
+        // New format - use as is
+        allAddresses = existing;
+      }
+    } catch (e) {
+      console.log(`   ⚠️  Could not load existing addresses: ${e.message}`);
+    }
+  }
+  
+  // Add/update current network addresses
+  allAddresses[networkName] = {
     verifier: verifierAddress,
     monadPriceGuard: priceGuardAddress,
-    network: networkName,
     chainId
   };
+  
+  // Also keep backward compatibility: if this is monadTestnet, add flat keys
+  if (networkName === "monadTestnet") {
+    allAddresses.verifier = verifierAddress;
+    allAddresses.monadPriceGuard = priceGuardAddress;
+    allAddresses.network = networkName;
+    allAddresses.chainId = chainId;
+  }
 
   // Save to root
-  const rootPath = path.join(__dirname, '..', 'contract-addresses.json');
-  fs.writeFileSync(rootPath, JSON.stringify(addresses, null, 2));
+  fs.writeFileSync(rootPath, JSON.stringify(allAddresses, null, 2));
   console.log(`   - Saved to: ${rootPath}`);
 
   // Save to public/
-  const publicDir = path.join(__dirname, '..', 'public');
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
   }
-  const publicPath = path.join(publicDir, 'contract-addresses.json');
-  fs.writeFileSync(publicPath, JSON.stringify(addresses, null, 2));
+  fs.writeFileSync(publicPath, JSON.stringify(allAddresses, null, 2));
   console.log(`   - Saved to: ${publicPath}`);
+  
+  console.log(`\n📋 Current contract addresses:`);
+  Object.keys(allAddresses).forEach(key => {
+    if (typeof allAddresses[key] === 'object' && allAddresses[key].chainId) {
+      console.log(`   ${key}:`);
+      console.log(`     Verifier: ${allAddresses[key].verifier}`);
+      console.log(`     MonadPriceGuard: ${allAddresses[key].monadPriceGuard}`);
+    }
+  });
 
   console.log("\n🎉 Deployment Finished Successfully!");
 }
