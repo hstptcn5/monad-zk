@@ -90,19 +90,53 @@ export async function switchToMonadTestnet(): Promise<boolean> {
 }
 
 /**
- * Load contract addresses from file or use defaults
+ * Load contract addresses from environment variables or file
+ * Priority: 1. Environment variables (Vercel), 2. JSON file, 3. Empty object
  */
 export async function loadContractAddresses(): Promise<ContractAddresses> {
+  // First, try environment variables (standard for Vercel deployments)
+  // Note: Vite only exposes variables prefixed with VITE_ to client-side code
+  const envVerifier = import.meta.env.VITE_VERIFIER_ADDRESS;
+  const envPriceGuard = import.meta.env.VITE_MONAD_PRICE_GUARD_ADDRESS;
+  
+  if (envVerifier || envPriceGuard) {
+    console.log('[Blockchain] Using contract addresses from environment variables');
+    return {
+      verifier: envVerifier,
+      monadPriceGuard: envPriceGuard,
+    };
+  }
+  
+  // Fallback to JSON file
   try {
     const response = await fetch('/contract-addresses.json');
     if (response.ok) {
-      return await response.json();
+      const data = await response.json();
+      
+      // If the JSON has network-specific addresses, use monadTestnet
+      if (data.monadTestnet) {
+        console.log('[Blockchain] Using Monad Testnet addresses from JSON');
+        return {
+          verifier: data.monadTestnet.verifier,
+          monadPriceGuard: data.monadTestnet.monadPriceGuard,
+        };
+      }
+      
+      // Otherwise, use root-level addresses (backward compatibility)
+      if (data.verifier || data.monadPriceGuard) {
+        console.log('[Blockchain] Using root-level addresses from JSON');
+        return {
+          verifier: data.verifier,
+          monadPriceGuard: data.monadPriceGuard,
+        };
+      }
     }
   } catch (error) {
-    console.warn('Could not load contract-addresses.json, using defaults');
+    console.warn('[Blockchain] Could not load contract-addresses.json:', error);
   }
   
   // Return empty - contracts need to be deployed first
+  console.warn('[Blockchain] No contract addresses found. Using mock transactions.');
   return {};
 }
 

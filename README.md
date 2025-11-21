@@ -8,7 +8,7 @@ This demo application showcases an **end-to-end pipeline** that combines AI infe
 - Users input market data → an ONNX AI model predicts a price
 - An EZKL pipeline generates a witness and (currently) a **mock** ZK proof
 - The prediction and proof payload are sent to **Monad Testnet**, returning a **real transaction hash (TxHash)**
-
+Live at: https://monad-zk.vercel.app/
 <div align="center">
   <img src="flow.png" alt="Pipeline Flow" width="800" />
   <p><em>End-to-end pipeline flow: AI Inference → ZK Proof Generation → On-chain Verification</em></p>
@@ -89,9 +89,27 @@ Contracts have been deployed using Hardhat. Addresses are stored in `public/cont
 - **MonadPriceGuard**: `0x889788629fc70fbAA9c1fdEe398021e511c34031`
 - **Deployment Tx**: Deployed for performance comparison with Monad Testnet
 
-The frontend automatically loads `public/contract-addresses.json` and:
-- Logs: `[Blockchain] Contract loaded: 0x8BBB98...`
-- Uses `MonadPriceGuard` to send real verification transactions
+The frontend automatically loads contract addresses from:
+1. **Environment variables** (priority for Vercel deployments)
+2. **JSON file** (`public/contract-addresses.json`) as fallback
+
+### Vercel Deployment Configuration
+
+When deploying to Vercel, set these environment variables in your Vercel project settings:
+
+1. Go to your Vercel project → **Settings** → **Environment Variables**
+2. Add the following variables:
+
+   ```
+   VITE_VERIFIER_ADDRESS=0xB23A59A8BD9743A60C5f80dB73D707A0637FA722
+   VITE_MONAD_PRICE_GUARD_ADDRESS=0x8BBB989B000bbef78e4250Ee452a89b5b71da97c
+   ```
+
+   **Important**: Vite only exposes environment variables prefixed with `VITE_` to client-side code, so you must use the `VITE_` prefix.
+
+3. **Redeploy** your application after adding the environment variables
+
+**Note**: If environment variables are not set, the app will try to load from `public/contract-addresses.json`. If that also fails, it will use mock transactions (you'll see `[INFO] Contract not deployed, using mock transaction` in the logs).
 
 ---
 
